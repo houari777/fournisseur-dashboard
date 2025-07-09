@@ -4,11 +4,20 @@ import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import dayjs from "dayjs";
 import { onSnapshot } from "firebase/firestore";
 import {Sidebar} from "lucide-react";
-
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 export default function Ventes() {
     const [ventes, setVentes] = useState([]);
-
+    const exportPDF = () => {
+        const doc = new jsPDF();
+        doc.text("Rapport des ventes", 14, 16);
+        doc.autoTable({
+            head: [["Produit", "Quantité", "Date"]],
+            body: ventes.map((v) => [v.produit, v.qte, v.date]),
+        });
+        doc.save("rapport-ventes.pdf");
+    };
     const fetchVentes = async () => {
         const q = query(collection(db, "ventes"), orderBy("date", "desc"));
         const snapshot = await getDocs(q);
@@ -39,7 +48,11 @@ export default function Ventes() {
             <div className="ml-64 mt-16 p-6">
     <div className="ml-64 mt-16 p-6 text-white">
             <h2 className="text-2xl font-bold mb-4">📊 Liste des ventes</h2>
-            <div className="bg-gray-800 rounded p-4 shadow">
+        <button onClick={exportPDF} className="bg-blue-600 p-2 rounded mt-4">
+            📄 Télécharger PDF
+        </button>
+
+        <div className="bg-gray-800 rounded p-4 shadow">
                 <table className="w-full text-left text-sm">
                     <thead>
                     <tr className="text-gray-400 border-b border-gray-600">

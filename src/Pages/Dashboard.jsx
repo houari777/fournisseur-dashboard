@@ -1,31 +1,32 @@
-import { useEffect, useState } from "react";
-import { auth } from "../firebase";
-import { signOut } from "firebase/auth";
-import Sidebar from "../components/Sidebar";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import Sidebar from "../components/Sidebar"; // ✅ Correct
 import Topbar from "../components/Topbar";
-import { useNavigate } from "react-router-dom";
+
+const data = [
+    { name: "Lundi", ventes: 12 },
+    { name: "Mardi", ventes: 9 },
+    { name: "Mercredi", ventes: 17 },
+];
 
 export default function Dashboard() {
-    const [user, setUser] = useState(null);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        setUser(auth.currentUser);
-    }, []);
-
-    const handleLogout = async () => {
-        await signOut(auth);
-        navigate("/");
-    };
-
     return (
-        <div className="bg-gray-100 dark:bg-gray-900 min-h-screen">
-            <Sidebar onLogout={handleLogout} />
-            <Topbar user={user} />
-            <main className="ml-64 mt-16 p-6 text-white">
-                <h2 className="text-2xl font-bold mb-4">Bienvenue, {user?.email}</h2>
-                <p>Statistiques générales ici (à venir...)</p>
-            </main>
-        </div>
+        <>
+            <Sidebar />
+            <Topbar />
+            <div className="ml-64 mt-16 p-6 text-white">
+                <h2 className="text-2xl font-bold mb-4">📊 المبيعات الأسبوعية</h2>
+
+                <div className="bg-gray-900 p-4 rounded shadow">
+                    <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={data}>
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Bar dataKey="ventes" fill="#38bdf8" />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+        </>
     );
 }

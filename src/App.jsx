@@ -12,6 +12,7 @@ import Vendeurs from "./Pages/Vendeurs";
 import PrivateRoute from "./components/PrivateRoute";
 import Ventes from "./Pages/Ventes";
 import StockCamions from "./Pages/StockCamions";
+import AjouterCamion from "./Pages/AjouterCamion";
 
 export default function App() {
     return (
@@ -35,6 +36,9 @@ export default function App() {
                 } />
                 <Route path="/stocks" element={
                     <PrivateRoute><StockCamions /></PrivateRoute> // ✅ ici
+                } />
+                <Route path="/ajouter-camion" element={
+                    <PrivateRoute><AjouterCamion /></PrivateRoute>
                 } />
             </Routes>
         </Router>

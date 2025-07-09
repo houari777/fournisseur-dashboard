@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 import {Sidebar} from "lucide-react";
+import Topbar from "../components/Topbar";
+import { useNavigate } from "react-router-dom";
 
 
 export default function Camions() {
     const [camions, setCamions] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchCamions = async () => {
@@ -21,9 +24,16 @@ export default function Camions() {
     return (
         <>
             <Sidebar />
-            <div className="ml-64 mt-16 p-6">
-        <div className="ml-64 mt-16 p-6 text-white">
+            <Topbar />
+            <div className="ml-64 mt-16 p-6 text-white">
+
             <h2 className="text-2xl font-bold mb-4">🚛 Liste des camions</h2>
+                <button
+                    onClick={() => navigate("/ajouter-camion")}
+                    className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white"
+                >
+                    ➕ Ajouter Camion
+                </button>
             <div className="bg-gray-800 rounded-lg shadow p-4">
                 <table className="w-full text-left">
                     <thead>
@@ -59,8 +69,8 @@ export default function Camions() {
                     </div>
                 )}
             </div>
+
         </div>
-            </div>
-        </>
+</>
     );
 }

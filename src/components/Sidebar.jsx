@@ -1,4 +1,3 @@
-// src/Components/Sidebar.jsx
 import { Link, useLocation } from "react-router-dom";
 import {
     LayoutDashboard,
@@ -11,21 +10,21 @@ import {
 } from "lucide-react";
 
 const menuItems = [
-    { label: "Dashboard", icon: <LayoutDashboard size={18} />, path: "/dashboard" },
-    { label: "Produits", icon: <Package size={18} />, path: "/produits" },
-    { label: "Camions", icon: <Truck size={18} />, path: "/camions" },
-    { label: "Vendeurs", icon: <User size={18} />, path: "/vendeurs" },
-    { label: "Ventes", icon: <ShoppingCart size={18} />, path: "/ventes" },
-    { label: "Stock", icon: <Layers size={18} />, path: "/stocks" },
+    { label: "لوحة القيادة", icon: <LayoutDashboard />, path: "/dashboard" },
+    { label: "المنتجات", icon: <Package />, path: "/produits" },
+    { label: "الشاحنات", icon: <Truck />, path: "/camions" },
+    { label: "البائعين", icon: <User />, path: "/vendeurs" },
+    { label: "المبيعات", icon: <ShoppingCart />, path: "/ventes" },
+    { label: "المخزون", icon: <Layers />, path: "/stocks" },
 ];
 
 export default function Sidebar() {
     const location = useLocation();
 
     return (
-        <aside className="fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white shadow-lg">
+        <aside className="fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white shadow-lg z-20 hidden md:block">
             <div className="text-2xl font-bold px-6 py-4 border-b border-gray-700">
-                🛻 Camion Vision
+                🛻 كاميون فيزيون
             </div>
             <nav className="mt-4 flex flex-col gap-1">
                 {menuItems.map((item) => (
@@ -44,13 +43,13 @@ export default function Sidebar() {
                 <div className="mt-auto">
                     <button
                         onClick={() => {
-                            localStorage.clear(); // ou auth.signOut() selon ton cas
+                            localStorage.clear();
                             window.location.href = "/";
                         }}
                         className="flex items-center gap-2 px-6 py-3 text-red-400 hover:text-red-500"
                     >
                         <LogOut size={18} />
-                        Déconnexion
+                        تسجيل الخروج
                     </button>
                 </div>
             </nav>

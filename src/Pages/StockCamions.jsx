@@ -6,6 +6,8 @@ import {Sidebar} from "lucide-react";
 
 export default function StockCamions() {
     const [stocks, setStocks] = useState([]);
+    const [filtreCamion, setFiltreCamion] = useState("");
+    const camionsDispo = [...new Set(stocks.map((s) => s.camion))];
 
     const fetchStocks = async () => {
         const snap = await getDocs(collection(db, "camions"));
@@ -33,6 +35,16 @@ export default function StockCamions() {
             <div className="ml-64 mt-16 p-6">
         <div className="ml-64 mt-16 p-6 text-white">
             <h2 className="text-2xl font-bold mb-4">📦 Stock par camion</h2>
+            <select
+                className="bg-gray-800 p-2 rounded mb-4"
+                value={filtreCamion}
+                onChange={(e) => setFiltreCamion(e.target.value)}
+            >
+                <option value="">🛻 Tous les camions</option>
+                {camionsDispo.map((c) => (
+                    <option key={c}>{c}</option>
+                ))}
+            </select>
 
             <div className="bg-gray-800 rounded p-4 shadow">
                 <table className="w-full text-left text-sm">
@@ -49,6 +61,10 @@ export default function StockCamions() {
                             key={`${s.camion}-${s.produit}-${index}`}
                             className="border-t border-gray-700 hover:bg-gray-700/20"
                         >
+                            <td className={`p-2 ${s.quantite < 5 ? "text-red-400 font-semibold" : ""}`}>
+                                {s.quantite}
+                            </td>
+
                             <td className="p-2">{s.camion}</td>
                             <td className="p-2">{s.produit}</td>
                             <td className="p-2">{s.quantite}</td>
