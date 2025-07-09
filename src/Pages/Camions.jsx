@@ -1,76 +1,111 @@
-import { useEffect, useState } from "react";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../firebase";
-import {Sidebar} from "lucide-react";
-import Topbar from "../components/Topbar";
-import { useNavigate } from "react-router-dom";
-
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {collection, deleteDoc, doc, getDocs, updateDoc} from "firebase/firestore";
+import {db} from "../firebase";
 
 export default function Camions() {
-    const [camions, setCamions] = useState([]);
     const navigate = useNavigate();
+    const [camions, setCamions] = useState([]);
 
     useEffect(() => {
         const fetchCamions = async () => {
-            const q = query(collection(db, "users"), where("role", "==", "camion"));
-            const snapshot = await getDocs(q);
-            const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+            const snapshot = await getDocs(collection(db, "camions"));
+            const data = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
             setCamions(data);
         };
 
         fetchCamions();
     }, []);
+    const rechargerStock = async (camionId) => {
+        const camionRef = doc(db, "camions", camionId);
+        await updateDoc(camionRef, {
+            stock: {
+                "Huile 5L": 20,
+                "Savon": 15,
+                "Lait": 10,
+            }
+        });
+        alert("Stock rechargé ✅");
+        window.location.reload();
+    };
 
+// Modifier le vendeur (prompt simplifié)
+    const modifierVendeur = async (camion) => {
+        const nouveauNom = prompt("Nouveau nom du vendeur :", camion.vendeur);
+        if (!nouveauNom) return;
+
+        await updateDoc(doc(db, "camions", camion.id), {
+            vendeur: nouveauNom
+        });
+
+        alert("Vendeur modifié ✅");
+        window.location.reload();
+    };
+
+// Supprimer le camion
+    const supprimerCamion = async (camionId) => {
+        if (!window.confirm("Supprimer ce camion ?")) return;
+        await deleteDoc(doc(db, "camions", camionId));
+        alert("Camion supprimé ✅");
+        setCamions(camions.filter((c) => c.id !== camionId));
+    };
     return (
-        <>
-            <Sidebar />
-            <Topbar />
-            <div className="ml-64 mt-16 p-6 text-white">
-
-            <h2 className="text-2xl font-bold mb-4">🚛 Liste des camions</h2>
+        <div className="ml-64 mt-16 p-6 text-white">
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">🚚 Liste des Camions</h2>
                 <button
                     onClick={() => navigate("/ajouter-camion")}
-                    className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white"
+                    className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded"
                 >
                     ➕ Ajouter Camion
                 </button>
-            <div className="bg-gray-800 rounded-lg shadow p-4">
-                <table className="w-full text-left">
-                    <thead>
-                    <tr className="text-gray-400">
-                        <th className="p-2">#</th>
-                        <th className="p-2">Numéro de camion</th>
-                        <th className="p-2">Email</th>
-                        <th className="p-2">Connecté</th>
-                        <th className="p-2">UID</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {camions.map((camion, index) => (
-                        <tr key={camion.id} className="border-t border-gray-700 hover:bg-gray-700/50">
-                            <td className="p-2">{index + 1}</td>
-                            <td className="p-2 font-medium">{camion.numeroCamion}</td>
-                            <td className="p-2">{camion.email}</td>
-                            <td className="p-2">
-                                {camion.connected ? (
-                                    <span className="text-green-400 font-semibold">🟢 Oui</span>
-                                ) : (
-                                    <span className="text-red-400 font-semibold">🔴 Non</span>
-                                )}
-                            </td>
-                            <td className="p-2 text-xs">{camion.id}</td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-                {camions.length === 0 && (
-                    <div className="text-gray-400 text-sm text-center mt-6">
-                        Aucun camion trouvé.
-                    </div>
-                )}
             </div>
 
+            <table className="w-full bg-gray-800 rounded shadow text-left">
+                <thead className="bg-gray-700 text-white">
+                <tr>
+                    <th className="p-3">🚛 Camion</th>
+                    <th className="p-3">👤 Vendeur</th>
+                    <th className="p-3">📦 Stock</th>
+                </tr>
+                </thead>
+                <tbody>
+                {camions.map((camion) => (
+                    <tr key={camion.id} className="border-t border-gray-700">
+                        <td className="p-3">{camion.numero}</td>
+                        <td className="p-3">{camion.vendeur}</td>
+                        <td className="p-3">
+                            {camion.stock
+                                ? Object.entries(camion.stock)
+                                    .map(([produit, qte]) => `${produit}: ${qte}`)
+                                    .join(", ")
+                                : "Aucun stock"}
+                        </td>
+                        <td className="p-3 flex flex-col gap-2">
+                            <button onClick={() => rechargerStock(camion.id)} className="bg-blue-600 px-3 py-1 rounded">🔄 Stock</button>
+                            <button onClick={() => modifierVendeur(camion)} className="bg-yellow-600 px-3 py-1 rounded">✏️ Vendeur</button>
+                            <button onClick={() => supprimerCamion(camion.id)} className="bg-red-600 px-3 py-1 rounded">🗑 Supprimer</button>
+                            {camion.localisation ? (
+                                <a
+                                    href={`https://www.google.com/maps?q=${camion.localisation.lat},${camion.localisation.lng}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-blue-400 underline"
+                                >
+                                    📍 Localiser
+                                </a>
+                            ) : (
+                                "❌ Pas de GPS"
+                            )}
+                        </td>
+
+                    </tr>
+                ))}
+                </tbody>
+            </table>
         </div>
-</>
     );
 }
