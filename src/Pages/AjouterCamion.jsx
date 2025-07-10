@@ -33,7 +33,7 @@ export default function AjouterCamion() {
     };
 
     return (
-        <div className="ml-64 mt-16 p-6 text-white">
+        <div className="text-white">
             <h2 className="text-2xl font-bold mb-4">➕ Ajouter un camion</h2>
 
             <div className="bg-gray-800 p-6 rounded shadow space-y-4 max-w-md">

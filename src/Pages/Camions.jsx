@@ -53,7 +53,7 @@ export default function Camions() {
         setCamions(camions.filter((c) => c.id !== camionId));
     };
     return (
-        <div className="ml-64 mt-16 p-6 text-white">
+        <div className="text-white">
             <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold">🚚 Liste des Camions</h2>
                 <button
@@ -84,22 +84,43 @@ export default function Camions() {
                                     .join(", ")
                                 : "Aucun stock"}
                         </td>
-                        <td className="p-3 flex flex-col gap-2">
-                            <button onClick={() => rechargerStock(camion.id)} className="bg-blue-600 px-3 py-1 rounded">🔄 Stock</button>
-                            <button onClick={() => modifierVendeur(camion)} className="bg-yellow-600 px-3 py-1 rounded">✏️ Vendeur</button>
-                            <button onClick={() => supprimerCamion(camion.id)} className="bg-red-600 px-3 py-1 rounded">🗑 Supprimer</button>
-                            {camion.localisation ? (
-                                <a
-                                    href={`https://www.google.com/maps?q=${camion.localisation.lat},${camion.localisation.lng}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="text-blue-400 underline"
+                        <td className="p-3">
+                            <div className="flex flex-wrap gap-1">
+                                <button 
+                                    onClick={() => rechargerStock(camion.id)} 
+                                    className="bg-blue-600 hover:bg-blue-700 p-1 rounded text-xs"
+                                    title="Recharger le stock"
                                 >
-                                    📍 Localiser
-                                </a>
-                            ) : (
-                                "❌ Pas de GPS"
-                            )}
+                                    🔄
+                                </button>
+                                <button 
+                                    onClick={() => modifierVendeur(camion)} 
+                                    className="bg-yellow-600 hover:bg-yellow-700 p-1 rounded text-xs"
+                                    title="Modifier le vendeur"
+                                >
+                                    ✏️
+                                </button>
+                                <button 
+                                    onClick={() => supprimerCamion(camion.id)} 
+                                    className="bg-red-600 hover:bg-red-700 p-1 rounded text-xs"
+                                    title="Supprimer le camion"
+                                >
+                                    🗑
+                                </button>
+                                {camion.localisation ? (
+                                    <a
+                                        href={`https://www.google.com/maps?q=${camion.localisation.lat},${camion.localisation.lng}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="bg-green-600 hover:bg-green-700 p-1 rounded text-xs inline-block"
+                                        title="Localiser sur la carte"
+                                    >
+                                        📍
+                                    </a>
+                                ) : (
+                                    <span className="text-gray-400 text-xs p-1" title="Pas de localisation disponible">❌</span>
+                                )}
+                            </div>
                         </td>
 
                     </tr>

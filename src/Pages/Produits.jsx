@@ -7,7 +7,6 @@ import {
     deleteDoc,
     doc,
 } from "firebase/firestore";
-import {Sidebar} from "lucide-react";
 
 
 export default function Produits() {
@@ -47,10 +46,7 @@ export default function Produits() {
     };
 
     return (
-        <>
-            <Sidebar />
-            <div className="ml-64 mt-16 p-6">
-        <div className="ml-64 mt-16 p-6 text-white">
+        <div className="text-white">
             <h2 className="text-2xl font-bold mb-4">📦 Liste des produits</h2>
 
             {/* Formulaire ajout */}
@@ -137,7 +133,5 @@ export default function Produits() {
                 )}
             </div>
         </div>
-</div>
-</>
     );
 }

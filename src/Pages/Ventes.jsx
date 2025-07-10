@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
-import dayjs from "dayjs";
 import { onSnapshot } from "firebase/firestore";
-import {Sidebar} from "lucide-react";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import dayjs from "dayjs";
 
 export default function Ventes() {
     const [ventes, setVentes] = useState([]);
@@ -43,10 +42,7 @@ export default function Ventes() {
     }, []);
 
     return (
-        <>
-            <Sidebar />
-            <div className="ml-64 mt-16 p-6">
-    <div className="ml-64 mt-16 p-6 text-white">
+        <div className="text-white">
             <h2 className="text-2xl font-bold mb-4">📊 Liste des ventes</h2>
         <button onClick={exportPDF} className="bg-blue-600 p-2 rounded mt-4">
             📄 Télécharger PDF
@@ -89,7 +85,5 @@ export default function Ventes() {
                 )}
             </div>
         </div>
-</div>
-</>
     );
 }
